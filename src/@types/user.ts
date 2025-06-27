@@ -1,7 +1,7 @@
 export interface User {
     name: string;
     email: string;
-    cpf: number;
+    cpf: string;
     dataNascimento: string;
     endereço: Endereco;
 }

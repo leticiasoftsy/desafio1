@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, InputGroup, ToastHeader, ToastBody } from "react-bootstrap";
 import type { User, } from "../../@types/user";
 import { getEndereco } from "../../utils/actions";
 import { Link } from "react-router-dom";
 import { salvarUsuariosNoCookie, obterUsuariosDoCookie } from "../../utils/cookies";
+import { Toast, ToastContainer } from "react-bootstrap";
 
 export default function UserForm() {
+
+  const [showToast, setShowToast] = useState(false)
+
   const [formData, setFormData] = useState<User>({
     name: "",
     email: "",
-    cpf: 0,
+    cpf: "",
     dataNascimento: "",
     endereço: {
       cep: "",
@@ -26,7 +30,8 @@ export default function UserForm() {
     const { name, value } = e.target;
 
     if (name === "cpf") {
-      setFormData((prev) => ({ ...prev, cpf: Number(value) }));
+      const somenteNumeros = value.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, cpf: somenteNumeros }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -70,7 +75,8 @@ export default function UserForm() {
     const usuariosSalvos = obterUsuariosDoCookie();
     const novosUsuarios = [...usuariosSalvos, formData];
     salvarUsuariosNoCookie(novosUsuarios);
-    alert("Usuário cadastrado com sucesso!");
+
+    setShowToast(true);
     console.log("Usuários salvos:", novosUsuarios);
   };
   
@@ -88,6 +94,7 @@ export default function UserForm() {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                maxLength={50}
                 required
               />
             </Form.Group>
@@ -95,9 +102,10 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>E-mail</Form.Label>
               <Form.Control
                 type="email"
+                placeholder="Digite seu e-mail"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
@@ -108,12 +116,15 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>CPF</Form.Label>
+              <Form.Label>CPF (Apenas numeros)</Form.Label>
               <Form.Control
-                type="number"
+                type="text"
+                placeholder="Digite seu CPF"
                 name="cpf"
                 value={formData.cpf || ""}
                 onChange={handleInputChange}
+                maxLength={11}
+                inputMode="numeric"
                 required
               />
             </Form.Group>
@@ -127,6 +138,8 @@ export default function UserForm() {
                 name="dataNascimento"
                 value={formData.dataNascimento}
                 onChange={handleInputChange}
+                min="1900-01-01"
+                max="2025-12-31"
                 required
               />
             </Form.Group>
@@ -135,22 +148,25 @@ export default function UserForm() {
 
         <h5 className="mt-4">Endereço</h5>
         <Row>
-          <Col md={4}>
+          <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>CEP</Form.Label>
+              <InputGroup>
               <Form.Control
                 type="text"
+                placeholder="Digite seu CEP"
                 name="cep"
                 value={formData.endereço.cep}
                 onChange={handleEnderecoChange}
+                maxLength={9}
+                inputMode="numeric"
                 required
               />
-            </Form.Group>
-          </Col>
-          <Col md={2} className="d-flex align-items-end">
-            <Button variant="secondary" onClick={buscarCep}>
+              <Button variant="secondary" onClick={buscarCep}>
               Buscar CEP
-            </Button>
+              </Button>
+            </InputGroup>
+            </Form.Group>
           </Col>
 
           <Col md={6}>
@@ -210,6 +226,22 @@ export default function UserForm() {
           Cadastrar Usuário
         </Button>
       </Form>
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={4000}
+        autohide
+        bg="primary"
+        >
+       <ToastHeader closeButton>
+        <strong className="me-auto">Sucesso</strong>
+       </ToastHeader>
+       <ToastBody className="text-white">
+        Usuário cadastrado com sucesso!
+       </ToastBody>
+       </Toast>
+      </ToastContainer>
       <Link to="/usuarios" className="btn btn-link mt-3">Ver usuários</Link>
     </Container>
   );
