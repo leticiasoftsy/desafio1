@@ -25,29 +25,57 @@ export default function UserForm() {
   });
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+    e: React.ChangeEvent<HTMLInputElement>)  => {
     const { name, value } = e.target;
 
     if (name === "cpf") {
-      const somenteNumeros = value.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, cpf: somenteNumeros }));
-    } else {
+     const somenteNumeros = value.replace(/\D/g, "").slice(0, 11);
+
+     let cpfFormatado = "";
+     
+      for (let i = 0; i < somenteNumeros.length; i++) {
+       cpfFormatado += somenteNumeros[i];
+       if (i === 2 || i === 5) cpfFormatado += ".";
+       if (i === 8) cpfFormatado += "-";
+    }
+       
+     setFormData((prev) => ({ ...prev, cpf: cpfFormatado }));
+     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleEnderecoChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
+    e: React.ChangeEvent<HTMLInputElement>) => {
+     const { name, value } = e.target;
+
+     if (name === "cep") {
+      const somenteNumeros = value.replace(/\D/g, "").slice(0, 8);
+
+      let cepFormatado = "";
+      for (let i = 0; i < somenteNumeros.length; i++) {
+        cepFormatado += somenteNumeros[i];
+        if (i === 4 && i !== somenteNumeros.length - 1) {
+          cepFormatado += "-";
+        }
+      }
+
+    setFormData((prev) => ({
+      ...prev, 
+      endereço: {
+        ...prev.endereço, 
+        [name]: cepFormatado,
+      },
+    }));
+  } else {
     setFormData((prev) => ({
       ...prev,
       endereço: {
         ...prev.endereço,
         [name]: value,
       },
-    }));
+    }))
+    }
   };
 
   const buscarCep = async () => {
@@ -81,7 +109,7 @@ export default function UserForm() {
   };
   
   return (
-    <Container className="mt-mt-4 p-4 bg-light rounded shadow-sm">
+    <Container className="mt-4 p-4 bg-light rounded shadow-sm">
       <h3 className="text-center bg-light text-dark py-3 px-4 rounded shadow-sm mb-4">
         Cadastro de Usuário
         </h3>
@@ -91,7 +119,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Nome</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="text"
                 placeholder="Digite seu nome"
                 name="name"
@@ -107,7 +135,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>E-mail</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="email"
                 placeholder="Digite seu e-mail"
                 name="email"
@@ -122,13 +150,13 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>CPF (Apenas numeros)</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="text"
                 placeholder="Digite seu CPF"
                 name="cpf"
                 value={formData.cpf || ""}
                 onChange={handleInputChange}
-                maxLength={11}
+                maxLength={14}
                 inputMode="numeric"
                 required
               />
@@ -139,7 +167,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Data de Nascimento</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="date"
                 name="dataNascimento"
                 value={formData.dataNascimento}
@@ -159,7 +187,11 @@ export default function UserForm() {
               <Form.Label>CEP</Form.Label>
               <InputGroup>
               <Form.Control
-                className="rounded-pill"
+                className="rounded-start"
+                style={{
+                  borderTopRightRadius: 0, 
+                  borderBottomRightRadius: 0, 
+                  height:"38px"}}
                 type="text"
                 placeholder="Digite seu CEP"
                 name="cep"
@@ -169,7 +201,14 @@ export default function UserForm() {
                 inputMode="numeric"
                 required
               />
-              <Button variant="outline-primary" onClick={buscarCep}>
+              <Button 
+              variant="outline-primary" 
+              onClick={buscarCep}
+              className="rounded-end"
+              style={{borderTopLeftRadius: 0, 
+                borderBottomLeftRadius: 0, 
+                height:"38px"}}
+              >
                Buscar CEP
               </Button>
             </InputGroup>
@@ -180,7 +219,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Logradouro</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="text"
                 name="logradouro"
                 value={formData.endereço.logradouro}
@@ -194,7 +233,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Bairro</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="text"
                 name="bairro"
                 value={formData.endereço.bairro}
@@ -208,7 +247,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Cidade</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="text"
                 name="cidade"
                 value={formData.endereço.cidade}
@@ -222,7 +261,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Estado</Form.Label>
               <Form.Control
-                className="rounded-pill"
+                className="rounded"
                 type="text"
                 name="estado"
                 value={formData.endereço.estado}
