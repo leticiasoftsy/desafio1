@@ -81,14 +81,17 @@ export default function UserForm() {
   };
   
   return (
-    <Container className="mt-4">
-      <h3 className="mb-4 title-center">Cadastro de Usuário</h3>
+    <Container className="mt-mt-4 p-4 bg-light rounded shadow-sm">
+      <h3 className="text-center bg-light text-dark py-3 px-4 rounded shadow-sm mb-4">
+        Cadastro de Usuário
+        </h3>
       <Form onSubmit={handleSubmit}>
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>Nome</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Digite seu nome"
                 name="name"
@@ -104,6 +107,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>E-mail</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="email"
                 placeholder="Digite seu e-mail"
                 name="email"
@@ -118,6 +122,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>CPF (Apenas numeros)</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Digite seu CPF"
                 name="cpf"
@@ -134,6 +139,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Data de Nascimento</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="date"
                 name="dataNascimento"
                 value={formData.dataNascimento}
@@ -153,6 +159,7 @@ export default function UserForm() {
               <Form.Label>CEP</Form.Label>
               <InputGroup>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Digite seu CEP"
                 name="cep"
@@ -162,8 +169,8 @@ export default function UserForm() {
                 inputMode="numeric"
                 required
               />
-              <Button variant="secondary" onClick={buscarCep}>
-              Buscar CEP
+              <Button variant="outline-primary" onClick={buscarCep}>
+               Buscar CEP
               </Button>
             </InputGroup>
             </Form.Group>
@@ -173,6 +180,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Logradouro</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 name="logradouro"
                 value={formData.endereço.logradouro}
@@ -186,6 +194,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Bairro</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 name="bairro"
                 value={formData.endereço.bairro}
@@ -199,6 +208,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Cidade</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 name="cidade"
                 value={formData.endereço.cidade}
@@ -212,6 +222,7 @@ export default function UserForm() {
             <Form.Group className="mb-3">
               <Form.Label>Estado</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 name="estado"
                 value={formData.endereço.estado}
@@ -222,23 +233,22 @@ export default function UserForm() {
           </Col>
         </Row>
 
-        <Button type="submit" variant="secondary">
+        <Button type="submit" variant="primary" className="px-4 py-2 rounded-pill">
           Cadastrar Usuário
         </Button>
       </Form>
       <ToastContainer position="top-end" className="p-3">
-        <Toast
-        onClose={() => setShowToast(false)}
-        show={showToast}
-        delay={4000}
-        autohide
-        bg="primary"
+        <Toast bg="success" className="text-white"
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={4000}
+          autohide
         >
        <ToastHeader closeButton>
-        <strong className="me-auto">Sucesso</strong>
+          <strong className="me-auto">Sucesso</strong>
        </ToastHeader>
        <ToastBody className="text-white">
-        Usuário cadastrado com sucesso!
+          Usuário cadastrado com sucesso!
        </ToastBody>
        </Toast>
       </ToastContainer>

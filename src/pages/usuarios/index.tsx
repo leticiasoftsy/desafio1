@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import UserTable from "./UserTable"; 
 import { obterUsuariosDoCookie } from "../../utils/cookies";
 import type { User } from "../../@types/user";
+import { Container, Spinner } from "react-bootstrap";
 
 
 export default function UsersPage(){
@@ -20,21 +21,31 @@ export default function UsersPage(){
     }, []);
 
     if (loading) {
-        return <div 
-                style={{
-                    color: "lightskyblue",
-                    display: "flex",
-                    justifyContent: "center"
-                    }}>
-                <h2>Carregando usuários, aguarde...</h2>
-                </div>
+        return (
+         <div 
+            style={{
+                color: "0d6efd",
+                height: "100vh",
+                backgroundColor: "#f8f9fa",
+                flexDirection: "column",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+            }}
+        >
+            <Spinner animation="border" role="status" variant="primary" />
+                <p className="mt-3 fs-5">Carregando usuários, aguarde...</p>
+            </div>
+        );
     }
 
     return(
        <>
-       <div style={{color: "lightskyblue"}}>
-       <h2 className="mb-4 text-center">Usuários Cadastrados</h2>
-       </div>
+       <Container>
+            <h2 className="bg-light text-center text-dark py-2 px-3 rounded shadow-sm mb-4">
+                Usuários Cadastrados
+            </h2>
+       </Container>
        <UserTable users={users} />
        </>
     )

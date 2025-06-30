@@ -24,13 +24,13 @@ export default function UserTable({ users }: Props) {
   if (users.length === 0) return <p className="text-muted">Nenhum usuário cadastrado.</p>;
 
   return (
-    <Card className="shadow-sm">
-      <Card.Header className="bg-secundary text-black">
+    <Card className="shadow-sm mt-3">
+      <Card.Header className="bg-primary text-white">
         Lista de Usuários
       </Card.Header>
       <Card.Body className="p-0">
-        <Table responsive hover striped bordered className="mb-0 text-center">
-          <thead className="table-">
+        <Table responsive hover bordered className="mb-0 text-center align-middle">
+          <thead className="table-light">
             <tr>
               <th>Nome</th>
               <th>Email</th>
