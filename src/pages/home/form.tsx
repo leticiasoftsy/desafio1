@@ -110,14 +110,17 @@ export default function UserForm() {
   
   return (
     <Container className="mt-4 p-4 bg-light rounded shadow-sm">
-      <h3 className="text-center bg-light text-dark py-3 px-4 rounded shadow-sm mb-4">
+      <h3 className="text-center bg-light text-dark py-3 px-4 rounded fw-bold shadow-sm mb-4">
         Cadastro de Usuário
         </h3>
       <Form onSubmit={handleSubmit}>
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Nome</Form.Label>
+              <Form.Label 
+              className="fw-bold">
+                Nome
+              </Form.Label>
               <Form.Control
                 className="rounded"
                 type="text"
@@ -133,7 +136,9 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>E-mail</Form.Label>
+              <Form.Label className="fw-bold">
+                E-mail
+              </Form.Label>
               <Form.Control
                 className="rounded"
                 type="email"
@@ -148,7 +153,9 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>CPF (Apenas numeros)</Form.Label>
+              <Form.Label className="fw-bold">
+                CPF (Apenas numeros)
+              </Form.Label>
               <Form.Control
                 className="rounded"
                 type="text"
@@ -165,7 +172,9 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Data de Nascimento</Form.Label>
+              <Form.Label className="fw-bold">
+                Data de Nascimento
+              </Form.Label>
               <Form.Control
                 className="rounded"
                 type="date"
@@ -184,14 +193,12 @@ export default function UserForm() {
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>CEP</Form.Label>
+              <Form.Label className="fw-bold">
+                CEP
+              </Form.Label>
               <InputGroup>
               <Form.Control
                 className="rounded-start"
-                style={{
-                  borderTopRightRadius: 0, 
-                  borderBottomRightRadius: 0, 
-                  height:"38px"}}
                 type="text"
                 placeholder="Digite seu CEP"
                 name="cep"
@@ -205,9 +212,6 @@ export default function UserForm() {
               variant="outline-primary" 
               onClick={buscarCep}
               className="rounded-end"
-              style={{borderTopLeftRadius: 0, 
-                borderBottomLeftRadius: 0, 
-                height:"38px"}}
               >
                Buscar CEP
               </Button>
@@ -217,7 +221,9 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Logradouro</Form.Label>
+              <Form.Label className="fw-bold">
+                Logradouro
+              </Form.Label>
               <Form.Control
                 className="rounded"
                 type="text"
@@ -225,13 +231,15 @@ export default function UserForm() {
                 value={formData.endereço.logradouro}
                 onChange={handleEnderecoChange}
                 required
-              />
+                />
             </Form.Group>
           </Col>
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Bairro</Form.Label>
+              <Form.Label className="fw-bold">
+                Bairro
+              </Form.Label>
               <Form.Control
                 className="rounded"
                 type="text"
@@ -245,7 +253,9 @@ export default function UserForm() {
 
           <Col md={4}>
             <Form.Group className="mb-3">
-              <Form.Label>Cidade</Form.Label>
+              <Form.Label className="fw-bold">
+                Cidade
+              </Form.Label>
               <Form.Control
                 className="rounded"
                 type="text"
@@ -259,7 +269,9 @@ export default function UserForm() {
 
           <Col md={2}>
             <Form.Group className="mb-3">
-              <Form.Label>Estado</Form.Label>
+              <Form.Label className="fw-bold">
+                Estado
+                </Form.Label>
               <Form.Control
                 className="rounded"
                 type="text"
@@ -272,7 +284,10 @@ export default function UserForm() {
           </Col>
         </Row>
 
-        <Button type="submit" variant="primary" className="px-4 py-2 rounded-pill">
+        <Button 
+                type="submit" 
+                variant="primary" 
+                className="px-4 py-2 rounded">
           Cadastrar Usuário
         </Button>
       </Form>
