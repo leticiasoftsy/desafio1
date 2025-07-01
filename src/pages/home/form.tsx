@@ -104,7 +104,7 @@ export default function UserForm() {
     const usuariosSalvos = obterUsuariosDoCookie();
     const novosUsuarios = [...usuariosSalvos, formData];
     salvarUsuariosNoCookie(novosUsuarios);
-    navigate("/usuarios");
+    navigate("/usuarios"); //mostrar os usuarios apos fazer o cadastro
 
 
     setShowToast(true);
