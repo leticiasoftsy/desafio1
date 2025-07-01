@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col, InputGroup, ToastHeader, ToastBody } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, InputGroup, ToastHeader, ToastBody, Toast, ToastContainer } from "react-bootstrap";
 import type { User, } from "../../@types/user";
 import { getEndereco } from "../../utils/actions";
 import { Link } from "react-router-dom";
 import { salvarUsuariosNoCookie, obterUsuariosDoCookie } from "../../utils/cookies";
-import { Toast, ToastContainer } from "react-bootstrap";
 
 export default function UserForm() {
 
