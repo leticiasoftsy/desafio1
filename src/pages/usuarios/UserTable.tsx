@@ -1,4 +1,4 @@
-import { Table, Card } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import type { User } from "../../@types/user";
 
 interface Props {
@@ -24,13 +24,15 @@ export default function UserTable({ users }: Props) {
   if (users.length === 0) return <p className="text-muted">Nenhum usuário cadastrado.</p>;
 
   return (
-    <Card className="shadow-sm mt-3">
-      <Card.Header className="bg-primary text-white">
-        Lista de Usuários
-      </Card.Header>
-      <Card.Body className="p-0">
-        <Table responsive hover bordered className="mb-0 text-center align-middle">
-          <thead className="table-light">
+        <Table 
+          striped 
+          bordered 
+          hover 
+          variant="light" 
+          responsive 
+          className="mb-0 align-middle w-75 mx-auto"
+          >
+          <thead className="table-height">
             <tr>
               <th>Nome</th>
               <th>Email</th>
@@ -49,7 +51,5 @@ export default function UserTable({ users }: Props) {
             ))}
           </tbody>
         </Table>
-      </Card.Body>
-    </Card>
   );
 }

@@ -41,8 +41,8 @@ export default function UsersPage(){
 
     return(
        <>
-       <Container>
-            <h2 className="bg-light text-center text-dark py-2 px-3 rounded shadow-sm mb-4">
+       <Container className="w-75 mx-auto mb-4">
+            <h2 className="text-dark py-5 m-1">
                 Usuários Cadastrados
             </h2>
        </Container>

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col, InputGroup, ToastHeader, ToastBody, Toast, ToastContainer } from "react-bootstrap";
+import { Form, Button, Row, Col, InputGroup, ToastHeader, ToastBody, Toast, ToastContainer, Card, CardBody } from "react-bootstrap";
 import type { User, } from "../../@types/user";
 import { getEndereco } from "../../utils/actions";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { salvarUsuariosNoCookie, obterUsuariosDoCookie } from "../../utils/cookies";
 
 export default function UserForm() {
 
   const [showToast, setShowToast] = useState(false)
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<User>({
     name: "",
@@ -102,26 +104,28 @@ export default function UserForm() {
     const usuariosSalvos = obterUsuariosDoCookie();
     const novosUsuarios = [...usuariosSalvos, formData];
     salvarUsuariosNoCookie(novosUsuarios);
+    navigate("/usuarios");
+
 
     setShowToast(true);
     console.log("Usuários salvos:", novosUsuarios);
   };
   
   return (
-    <Container className="mt-4 p-4 bg-light rounded shadow-sm">
-      <h3 className="text-center bg-light text-dark py-3 px-4 rounded fw-bold shadow-sm mb-4">
-        Cadastro de Usuário
-        </h3>
-      <Form onSubmit={handleSubmit}>
-        <Row>
-          <Col md={6}>
+    <Card className="mx-auto mt-5 shadow" style={{ maxWidth: "90%", maxHeight:"1000px" }}>
+      <Card.Header className="text-center fw-bold bg-light">
+        <h5>Cadastro de Usuário</h5>
+        </Card.Header>
+        <hr className="w-100 border-dark opacity p-0 my-0 m-0"/>
+        <CardBody>
+        <Form onSubmit={handleSubmit}>
+          <Row>
+            <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label 
-              className="fw-bold">
-                Nome
+              <Form.Label>
+                Nome<span className="text-danger">*</span>
               </Form.Label>
               <Form.Control
-                className="rounded"
                 type="text"
                 placeholder="Digite seu nome"
                 name="name"
@@ -135,11 +139,12 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
-                E-mail
+              <Form.Label>
+                E-mail<span 
+                className="text-danger"
+                >*</span>
               </Form.Label>
               <Form.Control
-                className="rounded"
                 type="email"
                 placeholder="Digite seu e-mail"
                 name="email"
@@ -152,11 +157,10 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
-                CPF (Apenas numeros)
+              <Form.Label>
+                CPF<span className="text-danger">*</span>
               </Form.Label>
               <Form.Control
-                className="rounded"
                 type="text"
                 placeholder="Digite seu CPF"
                 name="cpf"
@@ -171,11 +175,11 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
-                Data de Nascimento
+              <Form.Label>
+                Data de Nascimento<span className="text-danger">*</span>
               </Form.Label>
+              <InputGroup>
               <Form.Control
-                className="rounded"
                 type="date"
                 name="dataNascimento"
                 value={formData.dataNascimento}
@@ -183,7 +187,9 @@ export default function UserForm() {
                 min="1900-01-01"
                 max="2025-12-31"
                 required
+                style={{ appearance: "none"}}
               />
+              </InputGroup>
             </Form.Group>
           </Col>
         </Row>
@@ -192,12 +198,11 @@ export default function UserForm() {
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
-                CEP
+              <Form.Label>
+                CEP<span className="text-danger">*</span>
               </Form.Label>
               <InputGroup>
               <Form.Control
-                className="rounded-start"
                 type="text"
                 placeholder="Digite seu CEP"
                 name="cep"
@@ -220,11 +225,10 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
+              <Form.Label>
                 Logradouro
               </Form.Label>
               <Form.Control
-                className="rounded"
                 type="text"
                 name="logradouro"
                 value={formData.endereço.logradouro}
@@ -236,11 +240,10 @@ export default function UserForm() {
 
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
+              <Form.Label>
                 Bairro
               </Form.Label>
               <Form.Control
-                className="rounded"
                 type="text"
                 name="bairro"
                 value={formData.endereço.bairro}
@@ -252,11 +255,10 @@ export default function UserForm() {
 
           <Col md={4}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
+              <Form.Label>
                 Cidade
               </Form.Label>
               <Form.Control
-                className="rounded"
                 type="text"
                 name="cidade"
                 value={formData.endereço.cidade}
@@ -268,11 +270,10 @@ export default function UserForm() {
 
           <Col md={2}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">
+              <Form.Label>
                 Estado
                 </Form.Label>
               <Form.Control
-                className="rounded"
                 type="text"
                 name="estado"
                 value={formData.endereço.estado}
@@ -283,29 +284,40 @@ export default function UserForm() {
           </Col>
         </Row>
 
+      <div className="text-center">
         <Button 
-                type="submit" 
-                variant="primary" 
-                className="px-4 py-2 rounded">
+              type="submit" 
+              variant="primary" 
+              className="px-4 py-2">
           Cadastrar Usuário
         </Button>
+        </div>
       </Form>
-      <ToastContainer position="top-end" className="p-3">
-        <Toast bg="success" className="text-white"
+      </CardBody>
+
+      <ToastContainer //alerta de usuario cadastrado
+          position="top-end" 
+          className="p-3">
+        <Toast 
+          bg="success" 
+          className="text-white"
           onClose={() => setShowToast(false)}
           show={showToast}
           delay={4000}
           autohide
         >
        <ToastHeader closeButton>
-          <strong className="me-auto">Sucesso</strong>
+          <strong 
+          className="me-auto">
+            Sucesso
+            </strong>
        </ToastHeader>
-       <ToastBody className="text-white">
+       <ToastBody 
+          className="text-white">
           Usuário cadastrado com sucesso!
        </ToastBody>
-       </Toast>
-      </ToastContainer>
-      <Link to="/usuarios" className="btn btn-link mt-3">Ver usuários</Link>
-    </Container>
+          </Toast>
+     </ToastContainer>
+    </Card>
   );
 }
