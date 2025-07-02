@@ -1,26 +1,39 @@
 import { useEffect, useState } from "react";
 import UserTable from "./UserTable"; 
-import { obterUsuariosDoCookie } from "../../utils/cookies";
 import type { User } from "../../@types/user";
-import { Button, Container, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Button, Container, Spinner, Toast, ToastContainer, ToastHeader, ToastBody } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getUsuarios } from "../../utils/actions";
 
 
 export default function UsersPage(){
 
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false);
+    const [showToast, setShowToast] = useState(false)
+
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
+        async function useAsync() {
         setLoading(true);
-        setTimeout (() => {
-        const usuariosSalvos = obterUsuariosDoCookie();
-        setUsers(usuariosSalvos);
+        const usuariosSalvos = await getUsuarios();
+        //setUsers(usuariosSalvos);
+        console.log(usuariosSalvos)
         setLoading(false);
-       }, 960 )
+        }
+
+    useAsync()
 
     }, []);
+
+    useEffect(() => {
+        if (location.state?.usuarioCadastrado) {
+            setShowToast(true);
+            navigate(location.pathname, { replace: true, state: {}});
+        }
+    }, [location, navigate]);
 
     const handleVoltar = () => {
         navigate("/")
@@ -58,6 +71,34 @@ export default function UsersPage(){
             Voltar para tela de cadastro
         </Button>
        </div>
+       <Link to="/editar"></Link>
+
+       <ToastContainer //alerta de usuario cadastrado
+        position="top-end" className="p-3">
+        <Toast 
+        style={{
+          backgroundColor: "#343a40",
+          color: "#f8f9fa"
+        }}
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={4000}
+          autohide
+        >
+       <ToastHeader
+          closeButton
+          style={{
+            backgroundColor: "#6c757d",
+            color: "#fff",
+          }}
+          >
+          <strong className="me auto">Sucesso</strong>
+       </ToastHeader>
+       <ToastBody>
+          Usuário cadastrado com sucesso!
+       </ToastBody>
+          </Toast>
+     </ToastContainer>
        </>
     )
 }

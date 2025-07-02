@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { Form, Button, Row, Col, InputGroup, ToastHeader, ToastBody, Toast, ToastContainer, Card, CardBody } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Form, Button, Row, Col, InputGroup, Card, CardBody } from "react-bootstrap";
 import type { User, } from "../../@types/user";
 import { getEndereco } from "../../utils/actions";
 import { useNavigate } from "react-router-dom";
 import { salvarUsuariosNoCookie, obterUsuariosDoCookie } from "../../utils/cookies";
 
-export default function UserForm() {
+interface UserFormProps {
+  id?: string;
+}
 
-  const [showToast, setShowToast] = useState(false)
-
+export default function UserForm({ id }: UserFormProps){
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<User>({
@@ -24,6 +25,40 @@ export default function UserForm() {
       estado: "",
     },
   });
+
+  useEffect(() => {
+    console.log(id);
+
+    if (!id) return;
+
+    async function carregarUsuarioDaAPI() {
+      try {
+        const res = await fetch(`https://fakestoreapi.com/users/${id}`);
+        if (!res.ok) throw new Error("Usuario não encontrado");
+
+        const data = await res.json();
+        console.log("Usuario da API:", data);
+
+        setFormData({
+          name: `${data.name.firstname} ${data.name.lastname}`,
+          email: data.email,
+          cpf: "000.000.000-00",
+          dataNascimento: "2000-01-01",
+          endereço: {
+            cep: "00000-000",
+            logradouro: data.address.street,
+            bairro: data.address.city,
+            cidade: data.address.city,
+            estado: data.address.state
+          },
+        });
+      } catch (error) {
+        console.log("Id invalido ou erro:", error)
+      }
+    }
+
+    carregarUsuarioDaAPI();
+    }, [id])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>)  => {
@@ -102,19 +137,24 @@ export default function UserForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const usuariosSalvos = obterUsuariosDoCookie();
-    const novosUsuarios = [...usuariosSalvos, formData];
-    salvarUsuariosNoCookie(novosUsuarios);
-    navigate("/usuarios"); //mostrar os usuarios apos fazer o cadastro
+    
+    const index = usuariosSalvos.findIndex((u) => u.cpf === formData.cpf)
 
+    if (index !== -1) {
+      usuariosSalvos[index] = formData;
+    } else {
+      usuariosSalvos.push(formData);
+    }
 
-    setShowToast(true);
-    console.log("Usuários salvos:", novosUsuarios);
+    salvarUsuariosNoCookie(usuariosSalvos);
+    navigate("/usuarios", {state: {usuarioCadastrado: true}}); //mostrar os usuarios apos fazer o cadastro
+
   };
   
   return (
     <Card className="mx-auto mt-5 shadow" style={{ maxWidth: "90%", maxHeight:"1000px" }}>
       <Card.Header className="text-center fw-bold bg-light">
-        <h5>Cadastro de Usuário</h5>
+        <h5>{id ? "Editar usuario" : "Cadastro de Usuário"}</h5>
         </Card.Header>
         <hr className="w-100 border-dark opacity p-0 my-0 m-0"/>
         <CardBody>
@@ -129,7 +169,7 @@ export default function UserForm() {
                 type="text"
                 placeholder="Digite seu nome"
                 name="name"
-                value={formData.name}
+                value={formData.name || ""}
                 onChange={handleInputChange}
                 maxLength={50}
                 required
@@ -148,7 +188,7 @@ export default function UserForm() {
                 type="email"
                 placeholder="Digite seu e-mail"
                 name="email"
-                value={formData.email}
+                value={formData.email || ""}
                 onChange={handleInputChange}
                 required
               />
@@ -182,7 +222,7 @@ export default function UserForm() {
               <Form.Control
                 type="date"
                 name="dataNascimento"
-                value={formData.dataNascimento}
+                value={formData.dataNascimento || ""}
                 onChange={handleInputChange}
                 min="1900-01-01"
                 max="2025-12-31"
@@ -206,7 +246,7 @@ export default function UserForm() {
                 type="text"
                 placeholder="Digite seu CEP"
                 name="cep"
-                value={formData.endereço.cep}
+                value={formData.endereço?.cep || ""}
                 onChange={handleEnderecoChange}
                 maxLength={9}
                 inputMode="numeric"
@@ -231,7 +271,7 @@ export default function UserForm() {
               <Form.Control
                 type="text"
                 name="logradouro"
-                value={formData.endereço.logradouro}
+                value={formData.endereço?.logradouro || ""}
                 onChange={handleEnderecoChange}
                 required
                 />
@@ -246,7 +286,7 @@ export default function UserForm() {
               <Form.Control
                 type="text"
                 name="bairro"
-                value={formData.endereço.bairro}
+                value={formData.endereço?.bairro || ""}
                 onChange={handleEnderecoChange}
                 required
               />
@@ -261,7 +301,7 @@ export default function UserForm() {
               <Form.Control
                 type="text"
                 name="cidade"
-                value={formData.endereço.cidade}
+                value={formData.endereço?.cidade || ""} 
                 onChange={handleEnderecoChange}
                 required
               />
@@ -276,7 +316,7 @@ export default function UserForm() {
               <Form.Control
                 type="text"
                 name="estado"
-                value={formData.endereço.estado}
+                value={formData.endereço?.estado || ""}
                 onChange={handleEnderecoChange}
                 required
               />
@@ -289,35 +329,13 @@ export default function UserForm() {
               type="submit" 
               variant="primary" 
               className="px-4 py-2">
-          Cadastrar Usuário
+         {id ? "Atualizar Usuario" : "Cadastrar Usuário"}
         </Button>
         </div>
       </Form>
       </CardBody>
 
-      <ToastContainer //alerta de usuario cadastrado
-          position="top-end" 
-          className="p-3">
-        <Toast 
-          bg="success" 
-          className="text-white"
-          onClose={() => setShowToast(false)}
-          show={showToast}
-          delay={4000}
-          autohide
-        >
-       <ToastHeader closeButton>
-          <strong 
-          className="me-auto">
-            Sucesso
-            </strong>
-       </ToastHeader>
-       <ToastBody 
-          className="text-white">
-          Usuário cadastrado com sucesso!
-       </ToastBody>
-          </Toast>
-     </ToastContainer>
+      
     </Card>
   );
 }

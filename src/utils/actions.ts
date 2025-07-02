@@ -9,3 +9,14 @@ export async function getEndereco(cep:string) {
         console.error(error)
     }
 }
+
+export async function getUsuarios() {
+    try {
+        const resposta = await axios.get(`https://fakestoreapi.com/users`)
+        console.log(resposta)
+        return resposta.data
+
+    } catch (error){
+        console.error(error)
+    }
+}
