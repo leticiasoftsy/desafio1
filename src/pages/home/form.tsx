@@ -4,6 +4,9 @@ import type { User, } from "../../@types/user";
 import { getEndereco } from "../../utils/actions";
 import { useNavigate } from "react-router-dom";
 import { salvarUsuariosNoCookie, obterUsuariosDoCookie } from "../../utils/cookies";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema, type DataForm } from "./formData";
+import { useForm } from "react-hook-form";
 
 interface UserFormProps {
   id?: string;
@@ -11,6 +14,15 @@ interface UserFormProps {
 
 export default function UserForm({ id }: UserFormProps){
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<DataForm>({
+    resolver: zodResolver(formSchema),
+  });
 
   const [formData, setFormData] = useState<User>({
     name: {
@@ -148,19 +160,8 @@ export default function UserForm({ id }: UserFormProps){
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const usuariosSalvos = obterUsuariosDoCookie();
-    
-    const index = usuariosSalvos.findIndex((u) => u.email === formData.email)
+  const onSubmit = (data:DataForm) => {
 
-    if (index !== -1) {
-      usuariosSalvos[index] = formData;
-    } else {
-      usuariosSalvos.push(formData);
-    }
-
-    salvarUsuariosNoCookie(usuariosSalvos);
     navigate("/usuarios", {state: {usuarioCadastrado: true}}); //mostrar os usuarios apos fazer o cadastro
 
   };
@@ -184,7 +185,7 @@ export default function UserForm({ id }: UserFormProps){
                 {...register("name")}
                 isInvalid={!!errors.name}
                 maxLength={50}
-                required
+    
               />
               <Form.Control.Feedback type="invalid">
                 {errors.name?.message}
@@ -201,11 +202,12 @@ export default function UserForm({ id }: UserFormProps){
               </Form.Label>
               <Form.Control
                 type="email"
+                {...register("email")}
+                isInvalid={!!errors.email}
                 placeholder="Digite seu e-mail"
                 name="email"
-                value={formData.email || ""}
                 onChange={handleInputChange}
-                required
+                
               />
             </Form.Group>
           </Col>
@@ -217,13 +219,14 @@ export default function UserForm({ id }: UserFormProps){
               </Form.Label>
               <Form.Control
                 type="text"
+                {...register("password")}
+                isInvalid={!!errors.password}
                 placeholder="Digite sua senha"
-                name="cpf"
-                value={formData.password || ""}
+                name="password"
                 onChange={handleInputChange}
                 maxLength={14}
                 inputMode="numeric"
-                required
+                
               />
             </Form.Group>
           </Col>
@@ -236,12 +239,11 @@ export default function UserForm({ id }: UserFormProps){
               <InputGroup>
               <Form.Control
                 type="date"
+                {...register("name")}
+                isInvalid={!!errors.name}
                 name="dataNascimento"
-                value={formData.dataNascimento || ""}
-                onChange={handleInputChange}
                 min="1900-01-01"
                 max="2025-12-31"
-                required
                 style={{ appearance: "none"}}
               />
               </InputGroup>
@@ -259,13 +261,14 @@ export default function UserForm({ id }: UserFormProps){
               <InputGroup>
               <Form.Control
                 type="text"
+                {...register("name")}
+                isInvalid={!!errors.name}
                 placeholder="Digite seu CEP"
                 name="cep"
-                value={formData.endereço?.cep || ""}
                 onChange={handleEnderecoChange}
                 maxLength={9}
                 inputMode="numeric"
-                required
+                
               />
               <Button 
               variant="outline-primary" 
@@ -285,10 +288,11 @@ export default function UserForm({ id }: UserFormProps){
               </Form.Label>
               <Form.Control
                 type="text"
+                {...register("name")}
+                isInvalid={!!errors.name}
                 name="logradouro"
-                value={formData.endereço?.logradouro || ""}
                 onChange={handleEnderecoChange}
-                required
+                
                 />
             </Form.Group>
           </Col>
@@ -301,9 +305,8 @@ export default function UserForm({ id }: UserFormProps){
               <Form.Control
                 type="text"
                 name="bairro"
-                value={formData.endereço?.bairro || ""}
                 onChange={handleEnderecoChange}
-                required
+                
               />
             </Form.Group>
           </Col>
@@ -315,10 +318,11 @@ export default function UserForm({ id }: UserFormProps){
               </Form.Label>
               <Form.Control
                 type="text"
+                {...register("name")}
+                isInvalid={!!errors.name}
                 name="cidade"
-                value={formData.endereço?.cidade || ""} 
                 onChange={handleEnderecoChange}
-                required
+                
               />
             </Form.Group>
           </Col>
@@ -330,10 +334,11 @@ export default function UserForm({ id }: UserFormProps){
                 </Form.Label>
               <Form.Control
                 type="text"
+                {...register("name")}
+                isInvalid={!!errors.name}
                 name="estado"
-                value={formData.endereço?.estado || ""}
                 onChange={handleEnderecoChange}
-                required
+                
               />
             </Form.Group>
           </Col>
