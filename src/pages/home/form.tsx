@@ -13,16 +13,23 @@ export default function UserForm({ id }: UserFormProps){
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<User>({
-    name: "",
+    name: {
+      firstname: "",
+      lastname: ""
+    },
     email: "",
-    cpf: "",
-    dataNascimento: "",
-    endereço: {
-      cep: "",
-      logradouro: "",
-      bairro: "",
-      cidade: "",
-      estado: "",
+    phone: "",
+    username: "",
+    password: "",
+    address: {
+      city: "",
+      geolocation: {
+        lat: "",
+        long: "",
+      },
+      number: 0,
+      street: "",
+      zipcode: ""
     },
   });
 
@@ -40,17 +47,24 @@ export default function UserForm({ id }: UserFormProps){
         console.log("Usuario da API:", data);
 
         setFormData({
-          name: `${data.name.firstname} ${data.name.lastname}`,
-          email: data.email,
-          cpf: "000.000.000-00",
-          dataNascimento: "2000-01-01",
-          endereço: {
-            cep: "00000-000",
-            logradouro: data.address.street,
-            bairro: data.address.city,
-            cidade: data.address.city,
-            estado: data.address.state
-          },
+        name: {
+        firstname: "",
+        lastname: ""
+        },
+        email: "",
+        phone: "",
+        username: "",
+        password: "",
+        address: {
+        city: "",
+        geolocation: {
+        lat: "",
+        long: "",
+        },
+        number: 0,
+        street: "",
+        zipcode: ""
+    },
         });
       } catch (error) {
         console.log("Id invalido ou erro:", error)
@@ -99,7 +113,7 @@ export default function UserForm({ id }: UserFormProps){
     setFormData((prev) => ({
       ...prev, 
       endereço: {
-        ...prev.endereço, 
+        ...prev.address, 
         [name]: cepFormatado,
       },
     }));
@@ -107,7 +121,7 @@ export default function UserForm({ id }: UserFormProps){
     setFormData((prev) => ({
       ...prev,
       endereço: {
-        ...prev.endereço,
+        ...prev.address,
         [name]: value,
       },
     }))
@@ -116,13 +130,13 @@ export default function UserForm({ id }: UserFormProps){
 
   const buscarCep = async () => {
     try {
-      const cep = formData.endereço.cep.replace(/\D/g, "");
+      const cep = formData.address.zipcode.replace(/\D/g, "");
       const data = await getEndereco(cep)
 
       setFormData((prev) => ({
         ...prev,
         endereço: {
-          ...prev.endereço,
+          ...prev.address,
           logradouro: data.logradouro,
           bairro: data.bairro,
           cidade: data.localidade,
@@ -138,7 +152,7 @@ export default function UserForm({ id }: UserFormProps){
     e.preventDefault();
     const usuariosSalvos = obterUsuariosDoCookie();
     
-    const index = usuariosSalvos.findIndex((u) => u.cpf === formData.cpf)
+    const index = usuariosSalvos.findIndex((u) => u.email === formData.email)
 
     if (index !== -1) {
       usuariosSalvos[index] = formData;
@@ -158,7 +172,7 @@ export default function UserForm({ id }: UserFormProps){
         </Card.Header>
         <hr className="w-100 border-dark opacity p-0 my-0 m-0"/>
         <CardBody>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <Row>
             <Col md={6}>
             <Form.Group className="mb-3">
@@ -167,13 +181,14 @@ export default function UserForm({ id }: UserFormProps){
               </Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Digite seu nome"
-                name="name"
-                value={formData.name || ""}
-                onChange={handleInputChange}
+                {...register("name")}
+                isInvalid={!!errors.name}
                 maxLength={50}
                 required
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.name?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
 
@@ -198,13 +213,13 @@ export default function UserForm({ id }: UserFormProps){
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>
-                CPF<span className="text-danger">*</span>
+                Senha<span className="text-danger">*</span>
               </Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Digite seu CPF"
+                placeholder="Digite sua senha"
                 name="cpf"
-                value={formData.cpf || ""}
+                value={formData.password || ""}
                 onChange={handleInputChange}
                 maxLength={14}
                 inputMode="numeric"

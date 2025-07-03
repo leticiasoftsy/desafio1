@@ -19,12 +19,13 @@ export default function UsersPage(){
         async function useAsync() {
         setLoading(true);
         const usuariosSalvos = await getUsuarios();
-        //setUsers(usuariosSalvos);
+        setUsers(usuariosSalvos);
         console.log(usuariosSalvos)
         setLoading(false);
+        
         }
 
-    useAsync()
+    useAsync();
 
     }, []);
 
@@ -62,16 +63,18 @@ export default function UsersPage(){
        <>
        <Container className="w-75 mx-auto mb-4">
             <h2 className="text-dark py-5 m-1">Usuários Cadastrado</h2>
+            <Button onClick={handleVoltar} variant="secondary">
+            + Novo cadastro
+        </Button>
        </Container>
 
-       <UserTable users={users} />
-
-       <div className="text-center py-4">
-        <Button onClick={handleVoltar} variant="secondary">
-            Voltar para tela de cadastro
-        </Button>
+        <div className="text-center py-4">
+        
        </div>
        <Link to="/editar"></Link>
+
+       <UserTable users={users} //tabela de usuarios
+       />
 
        <ToastContainer //alerta de usuario cadastrado
         position="top-end" className="p-3">

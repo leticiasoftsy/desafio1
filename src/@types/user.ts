@@ -1,16 +1,25 @@
 export interface User {
     id?: string;
-    name: string;
+    name: Name;
     email: string;
-    cpf: string;
-    dataNascimento: string;
-    endereço: Endereco;
+    phone: string;
+    username: string;
+    password: string;
+    address: Address;
 }
 
-export interface Endereco {
-    cep: string;
-    logradouro: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
+export interface Name {
+    firstname: string;
+    lastname: string;
+}
+
+export interface Address {
+    city: string;
+    geolocation: {
+        lat: string;
+        long: string;
+    };
+    number: number;
+    street: string;
+    zipcode: string;
 }

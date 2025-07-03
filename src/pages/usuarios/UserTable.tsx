@@ -6,19 +6,6 @@ interface Props {
   users: User[];
 }
 
-function calcularIdade(dataNascimento: string): number {
-
-  const hoje = new Date();
-  const nascimento = new Date(dataNascimento);
-  let idade = hoje.getFullYear() - nascimento.getFullYear();
-
-  const m = hoje.getMonth() - nascimento.getMonth();
-  if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
-    idade--;
-  }
-  return idade;
-}
-
 export default function UserTable({ users }: Props) {
   const navigate = useNavigate();
 
@@ -37,23 +24,27 @@ export default function UserTable({ users }: Props) {
             <tr>
               <th>Nome</th>
               <th>Email</th>
-              <th>CPF</th>
-              <th>Idade</th>
-              <th></th>
+              <th>Telefone</th>
+              <th>Usuário</th>
+              <th>Senha</th>
+              <th>Cidade</th>
+              <th className="fs-5">#</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((u, i) => (
-              <tr key={i}>
-                <td>{u.name}</td>
-                <td>{u.email}</td>
-                <td>{u.cpf}</td>
-                <td>{calcularIdade(u.dataNascimento)} anos</td>
+            {users.map((user, index) => (
+              <tr key={user.id || index}>
+                <td>{user.name.firstname} {user.name.lastname}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.username}</td>
+                <td>{user.password}</td>
+                <td>{user.address.city}</td>
                 <td>
                   <Button
                   variant="btn btn-outline-dark"
                   size="sm"
-                  onClick={() => navigate(`/usuarios/editar/${u.id}`)}
+                  onClick={() => navigate(`/usuarios/editar/${user.id}`)}
               >
                   Editar
                 </Button>
