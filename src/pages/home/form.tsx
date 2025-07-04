@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Row, Col, InputGroup, Card, CardBody } from "react-bootstrap";
+import { Form, Button, Col, Card, CardBody } from "react-bootstrap";
 import type { User, } from "../../@types/user";
-import { getEndereco } from "../../utils/actions";
 import { useNavigate } from "react-router-dom";
-import { salvarUsuariosNoCookie, obterUsuariosDoCookie } from "../../utils/cookies";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema, type DataForm } from "./formData";
 import { useForm } from "react-hook-form";
@@ -43,7 +41,8 @@ export default function UserForm({ id }: UserFormProps){
       street: "",
       zipcode: ""
     },
-  });
+  }); 
+
 
   useEffect(() => {
     console.log(id);
@@ -56,7 +55,11 @@ export default function UserForm({ id }: UserFormProps){
         if (!res.ok) throw new Error("Usuario não encontrado");
 
         const data = await res.json();
-        console.log("Usuario da API:", data);
+        setFormData(data);
+
+        setValue("name", `${data.name.firstname} ${data.name.lastname}`);
+        setValue("email", data.email);
+        setValue("password", data.password)
 
         setFormData({
         name: {
@@ -84,7 +87,8 @@ export default function UserForm({ id }: UserFormProps){
     }
 
     carregarUsuarioDaAPI();
-    }, [id])
+    }, [id, setValue])
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>)  => {
@@ -107,75 +111,30 @@ export default function UserForm({ id }: UserFormProps){
     }
   };
 
-  const handleEnderecoChange = (
-    e: React.ChangeEvent<HTMLInputElement>) => {
-     const { name, value } = e.target;
-
-     if (name === "cep") {
-      const somenteNumeros = value.replace(/\D/g, "").slice(0, 8);
-
-      let cepFormatado = "";
-      for (let i = 0; i < somenteNumeros.length; i++) {
-        cepFormatado += somenteNumeros[i];
-        if (i === 4 && i !== somenteNumeros.length - 1) {
-          cepFormatado += "-";
-        }
-      }
-
-    setFormData((prev) => ({
-      ...prev, 
-      endereço: {
-        ...prev.address, 
-        [name]: cepFormatado,
-      },
-    }));
-  } else {
-    setFormData((prev) => ({
-      ...prev,
-      endereço: {
-        ...prev.address,
-        [name]: value,
-      },
-    }))
+  useEffect(() => {
+    if (id && formData.name.firstname && formData.email) {
+    setValue("name", formData.name.firstname);
+    setValue("email", formData.email)
+    setValue("password", formData.password)
     }
-  };
-
-  const buscarCep = async () => {
-    try {
-      const cep = formData.address.zipcode.replace(/\D/g, "");
-      const data = await getEndereco(cep)
-
-      setFormData((prev) => ({
-        ...prev,
-        endereço: {
-          ...prev.address,
-          logradouro: data.logradouro,
-          bairro: data.bairro,
-          cidade: data.localidade,
-          estado: data.uf,
-        },
-      }));
-    } catch  {
-      alert("Erro ao buscar o CEP.");
-    }
-  };
+  }, [id, formData, setValue])
 
   const onSubmit = (data:DataForm) => {
-
     navigate("/usuarios", {state: {usuarioCadastrado: true}}); //mostrar os usuarios apos fazer o cadastro
-
+    console.log("Dados do formulario", data);
+    <data value="" className="name"></data>
   };
   
   return (
-    <Card className="mx-auto mt-5 shadow" style={{ maxWidth: "90%", maxHeight:"1000px" }}>
+    <Card className="mx-auto mt-5 shadow" style={{ maxWidth: "50%", maxHeight:"1000px" }}>
       <Card.Header className="text-center fw-bold bg-light">
         <h5>{id ? "Editar usuario" : "Cadastro de Usuário"}</h5>
-        </Card.Header>
-        <hr className="w-100 border-dark opacity p-0 my-0 m-0"/>
+      </Card.Header>
+          <hr className="w-100 border-dark opacity p-0 my-0 m-0"/>
         <CardBody>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Row>
-            <Col md={6}>
+          <div>
+            <Col md={12}>
             <Form.Group className="mb-3">
               <Form.Label>
                 Nome<span className="text-danger">*</span>
@@ -185,7 +144,16 @@ export default function UserForm({ id }: UserFormProps){
                 {...register("name")}
                 isInvalid={!!errors.name}
                 maxLength={50}
-    
+                placeholder="Digite seu nome"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    name: {
+                      ...formData.name,
+                      firstname: e.target.value
+                    }
+                  })
+                }
               />
               <Form.Control.Feedback type="invalid">
                 {errors.name?.message}
@@ -193,7 +161,7 @@ export default function UserForm({ id }: UserFormProps){
             </Form.Group>
           </Col>
 
-          <Col md={6}>
+          <Col md={12}>
             <Form.Group className="mb-3">
               <Form.Label>
                 E-mail<span 
@@ -207,12 +175,14 @@ export default function UserForm({ id }: UserFormProps){
                 placeholder="Digite seu e-mail"
                 name="email"
                 onChange={handleInputChange}
-                
               />
+               <Form.Control.Feedback type="invalid">
+                {errors.email?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
 
-          <Col md={6}>
+          <Col md={12}>
             <Form.Group className="mb-3">
               <Form.Label>
                 Senha<span className="text-danger">*</span>
@@ -226,123 +196,13 @@ export default function UserForm({ id }: UserFormProps){
                 onChange={handleInputChange}
                 maxLength={14}
                 inputMode="numeric"
-                
               />
+               <Form.Control.Feedback type="invalid">
+                {errors.password?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
-
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Data de Nascimento<span className="text-danger">*</span>
-              </Form.Label>
-              <InputGroup>
-              <Form.Control
-                type="date"
-                {...register("name")}
-                isInvalid={!!errors.name}
-                name="dataNascimento"
-                min="1900-01-01"
-                max="2025-12-31"
-                style={{ appearance: "none"}}
-              />
-              </InputGroup>
-            </Form.Group>
-          </Col>
-        </Row>
-
-        <h5 className="mt-4">Endereço</h5>
-        <Row>
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                CEP<span className="text-danger">*</span>
-              </Form.Label>
-              <InputGroup>
-              <Form.Control
-                type="text"
-                {...register("name")}
-                isInvalid={!!errors.name}
-                placeholder="Digite seu CEP"
-                name="cep"
-                onChange={handleEnderecoChange}
-                maxLength={9}
-                inputMode="numeric"
-                
-              />
-              <Button 
-              variant="outline-primary" 
-              onClick={buscarCep}
-              className="rounded-end"
-              >
-               Buscar CEP
-              </Button>
-            </InputGroup>
-            </Form.Group>
-          </Col>
-
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Logradouro
-              </Form.Label>
-              <Form.Control
-                type="text"
-                {...register("name")}
-                isInvalid={!!errors.name}
-                name="logradouro"
-                onChange={handleEnderecoChange}
-                
-                />
-            </Form.Group>
-          </Col>
-
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Bairro
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="bairro"
-                onChange={handleEnderecoChange}
-                
-              />
-            </Form.Group>
-          </Col>
-
-          <Col md={4}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Cidade
-              </Form.Label>
-              <Form.Control
-                type="text"
-                {...register("name")}
-                isInvalid={!!errors.name}
-                name="cidade"
-                onChange={handleEnderecoChange}
-                
-              />
-            </Form.Group>
-          </Col>
-
-          <Col md={2}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Estado
-                </Form.Label>
-              <Form.Control
-                type="text"
-                {...register("name")}
-                isInvalid={!!errors.name}
-                name="estado"
-                onChange={handleEnderecoChange}
-                
-              />
-            </Form.Group>
-          </Col>
-        </Row>
+          </div>
 
       <div className="text-center">
         <Button 

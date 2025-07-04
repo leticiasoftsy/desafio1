@@ -22,7 +22,6 @@ export default function UsersPage(){
         setUsers(usuariosSalvos);
         console.log(usuariosSalvos)
         setLoading(false);
-        
         }
 
     useAsync();
