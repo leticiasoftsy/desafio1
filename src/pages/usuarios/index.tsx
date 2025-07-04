@@ -9,14 +9,17 @@ import { getUsuarios } from "../../utils/actions";
 export default function UsersPage(){
 
     const [users, setUsers] = useState<User[]>([])
+
     const [loading, setLoading] = useState(false);
+
     const [showToast, setShowToast] = useState(false)
 
     const navigate = useNavigate();
+
     const location = useLocation();
 
     useEffect(() => {
-        async function useAsync() {
+        async function fetchUsuarios() {
         setLoading(true);
         const usuariosSalvos = await getUsuarios();
         setUsers(usuariosSalvos);
@@ -24,7 +27,7 @@ export default function UsersPage(){
         setLoading(false);
         }
 
-    useAsync();
+    fetchUsuarios();
 
     }, []);
 

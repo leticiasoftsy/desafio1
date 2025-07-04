@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema, type DataForm } from "./formData";
 import { useForm } from "react-hook-form";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import axios from "axios";
 
 interface UserFormProps {
   id?: string;
@@ -12,6 +14,9 @@ interface UserFormProps {
 
 export default function UserForm({ id }: UserFormProps){
   const navigate = useNavigate();
+
+  const [mostrarSenha, setMostrarSenha] = useState(false)
+
 
   const {
     register,
@@ -24,24 +29,25 @@ export default function UserForm({ id }: UserFormProps){
 
   const [formData, setFormData] = useState<User>({
     name: {
-      firstname: "",
-      lastname: ""
-    },
+    firstname: "",
+    lastname: ""
+  },
     email: "",
     phone: "",
     username: "",
     password: "",
     address: {
-      city: "",
-      geolocation: {
-        lat: "",
-        long: "",
-      },
-      number: 0,
-      street: "",
-      zipcode: ""
+    city: "",
+    geolocation: {
+      lat: "",
+      long: "",
     },
-  }); 
+    number: 0,
+    street: "",
+    zipcode: ""
+  },
+});
+
 
 
   useEffect(() => {
@@ -49,80 +55,53 @@ export default function UserForm({ id }: UserFormProps){
 
     if (!id) return;
 
-    async function carregarUsuarioDaAPI() {
+    const carregarUsuarioDaAPI = async () => {
       try {
-        const res = await fetch(`https://fakestoreapi.com/users/${id}`);
-        if (!res.ok) throw new Error("Usuario não encontrado");
+        const res = await axios(`https://fakestoreapi.com/users/${id}`);
+        const user = res.data;
+        setFormData(user);
 
-        const data = await res.json();
-        setFormData(data);
-
-        setValue("name", `${data.name.firstname} ${data.name.lastname}`);
-        setValue("email", data.email);
-        setValue("password", data.password)
-
-        setFormData({
-        name: {
-        firstname: "",
-        lastname: ""
-        },
-        email: "",
-        phone: "",
-        username: "",
-        password: "",
-        address: {
-        city: "",
-        geolocation: {
-        lat: "",
-        long: "",
-        },
-        number: 0,
-        street: "",
-        zipcode: ""
-    },
-        });
+        setValue("name", user.name);
+        setValue("email", user.email);
+        setValue("password", user.password);
+        
       } catch (error) {
-        console.log("Id invalido ou erro:", error)
+        console.error("Id invalido ou erro:", error)
       }
     }
 
     carregarUsuarioDaAPI();
     }, [id, setValue])
 
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>)  => {
-    const { name, value } = e.target;
-
-    if (name === "cpf") {
-     const somenteNumeros = value.replace(/\D/g, "").slice(0, 11);
-
-     let cpfFormatado = "";
-     
-      for (let i = 0; i < somenteNumeros.length; i++) {
-       cpfFormatado += somenteNumeros[i];
-       if (i === 2 || i === 5) cpfFormatado += ".";
-       if (i === 8) cpfFormatado += "-";
+  const onSubmit = async (data:DataForm) => {
+    try {
+      if (id) {
+        await axios.put(`https://fakestoreapi.com/users/${id}`, {
+          email: data.email,
+          username: data.name,
+          password: data.password,
+          name: {
+            firstname: data.name,
+            lastname: data.name,
+          },
+        });
+        console.log("Usuario atualizado com sucesso!");
+      } else {
+        const response = await axios.post("https://fakestoreapi.com/users", {
+          email: data.email,
+          username: data.name,
+          password: data.password,
+          name: {
+            firstname: data.name,
+            lastname: data.name,
+          }
+        })
+        console.log("Usuario criado:", response.data)
+      }
+      navigate("/usuarios", {state: {usuarioCadastrado: true}});
+      } catch (error) {
+      console.error("Erro ao salvar", error);
     }
-       
-     setFormData((prev) => ({ ...prev, cpf: cpfFormatado }));
-     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  useEffect(() => {
-    if (id && formData.name.firstname && formData.email) {
-    setValue("name", formData.name.firstname);
-    setValue("email", formData.email)
-    setValue("password", formData.password)
-    }
-  }, [id, formData, setValue])
-
-  const onSubmit = (data:DataForm) => {
-    navigate("/usuarios", {state: {usuarioCadastrado: true}}); //mostrar os usuarios apos fazer o cadastro
-    console.log("Dados do formulario", data);
-    <data value="" className="name"></data>
   };
   
   return (
@@ -145,15 +124,6 @@ export default function UserForm({ id }: UserFormProps){
                 isInvalid={!!errors.name}
                 maxLength={50}
                 placeholder="Digite seu nome"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    name: {
-                      ...formData.name,
-                      firstname: e.target.value
-                    }
-                  })
-                }
               />
               <Form.Control.Feedback type="invalid">
                 {errors.name?.message}
@@ -174,7 +144,6 @@ export default function UserForm({ id }: UserFormProps){
                 isInvalid={!!errors.email}
                 placeholder="Digite seu e-mail"
                 name="email"
-                onChange={handleInputChange}
               />
                <Form.Control.Feedback type="invalid">
                 {errors.email?.message}
@@ -183,20 +152,20 @@ export default function UserForm({ id }: UserFormProps){
           </Col>
 
           <Col md={12}>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3 position-relative">
               <Form.Label>
                 Senha<span className="text-danger">*</span>
               </Form.Label>
               <Form.Control
-                type="text"
+                type={mostrarSenha ? "text" : "password"}
                 {...register("password")}
                 isInvalid={!!errors.password}
                 placeholder="Digite sua senha"
                 name="password"
-                onChange={handleInputChange}
                 maxLength={14}
                 inputMode="numeric"
               />
+              
                <Form.Control.Feedback type="invalid">
                 {errors.password?.message}
               </Form.Control.Feedback>
