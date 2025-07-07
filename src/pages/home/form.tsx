@@ -28,7 +28,10 @@ export default function UserForm({ id }: UserFormProps){
   });
 
   const [formData, setFormData] = useState<User>({
-    name: "",
+    name: {
+    firstname: "",
+    lastname: ""
+  },
     email: "",
     phone: "",
     username: "",
@@ -71,7 +74,7 @@ export default function UserForm({ id }: UserFormProps){
   const onSubmit = async (data:DataForm) => {
     try {
       if (id) {
-        await axios.put(`https://fakestoreapi.com/users/${id}`, {
+        const response = await axios.put(`https://fakestoreapi.com/users/${id}`, {
           email: data.email,
           username: data.name,
           password: data.password,
@@ -80,7 +83,7 @@ export default function UserForm({ id }: UserFormProps){
             lastname: data.name,
           },
         });
-        console.log("Usuario atualizado com sucesso!");
+        console.log("Usuario atualizado com sucesso!", response.data);
       } else {
         const response = await axios.post("https://fakestoreapi.com/users", {
           email: data.email,
@@ -115,13 +118,31 @@ export default function UserForm({ id }: UserFormProps){
               </Form.Label>
               <Form.Control
                 type="text"
-                {...register("name")}
-                isInvalid={!!errors.name}
+                {...register("name.firstname")}
+                isInvalid={!!errors.name?.firstname}
                 maxLength={50}
                 placeholder="Digite seu nome"
               />
               <Form.Control.Feedback type="invalid">
-                {errors.name?.message}
+                {errors.name?.firstname?.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          
+          <Col md={12}>
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Sobrenome<span className="text-danger">*</span>
+              </Form.Label>
+              <Form.Control
+                type="text"
+                {...register("name.lastname")}
+                isInvalid={!!errors.name?.lastname}
+                maxLength={50}
+                placeholder="Digite seu sobrenome"
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.name?.lastname?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>

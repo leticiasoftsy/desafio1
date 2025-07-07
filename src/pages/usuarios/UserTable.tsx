@@ -34,7 +34,7 @@ export default function UserTable({ users }: Props) {
           <tbody>
             {users.map((user, index) => (
               <tr key={user.id || index}>
-                <td>{user.name}</td>
+                <td>{user.name.firstname} {user.name.lastname}</td>
                 <td>{user.email}</td>
                 <td>{user.phone}</td>
                 <td>{user.username}</td>
