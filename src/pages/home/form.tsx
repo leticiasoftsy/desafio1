@@ -28,10 +28,7 @@ export default function UserForm({ id }: UserFormProps){
   });
 
   const [formData, setFormData] = useState<User>({
-    name: {
-    firstname: "",
-    lastname: ""
-  },
+    name: "",
     email: "",
     phone: "",
     username: "",
@@ -47,8 +44,6 @@ export default function UserForm({ id }: UserFormProps){
     zipcode: ""
   },
 });
-
-
 
   useEffect(() => {
     console.log(id);
@@ -165,7 +160,14 @@ export default function UserForm({ id }: UserFormProps){
                 maxLength={14}
                 inputMode="numeric"
               />
-              
+                <Button
+                variant="link"
+                type="button"
+                className="position-absolute end-0 top-0 mt-2 me-2 p-0"
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+                style={{ zIndex: 10 }}
+                >
+                </Button>
                <Form.Control.Feedback type="invalid">
                 {errors.password?.message}
               </Form.Control.Feedback>
