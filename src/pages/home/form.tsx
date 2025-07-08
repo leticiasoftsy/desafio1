@@ -73,28 +73,22 @@ export default function UserForm({ id }: UserFormProps){
 
   const onSubmit = async (data:DataForm) => {
     try {
-      if (id) {
-        const response = await axios.put(`https://fakestoreapi.com/users/${id}`, {
-          email: data.email,
-          username: data.name,
+      const userPayload = {
+        email: data.email,
+          username: `${data.name.firstname}_${data.name.lastname}`.toLowerCase(),
           password: data.password,
           name: {
-            firstname: data.name,
-            lastname: data.name,
+            firstname: data.name.firstname,
+            lastname: data.name.lastname,
           },
-        });
+        };
+      
+      if (id) {
+        const response = await axios.put(`https://fakestoreapi.com/users/${id}`, userPayload);
         console.log("Usuario atualizado com sucesso!", response.data);
       } else {
-        const response = await axios.post("https://fakestoreapi.com/users", {
-          email: data.email,
-          username: data.name,
-          password: data.password,
-          name: {
-            firstname: data.name,
-            lastname: data.name,
-          }
-        })
-        console.log("Usuario criado:", response.data)
+        const response = await axios.post("https://fakestoreapi.com/users", userPayload);
+        console.log("Usuario criado com sucesso:", response.data)
       }
       navigate("/usuarios", {state: {usuarioCadastrado: true}});
       } catch (error) {
