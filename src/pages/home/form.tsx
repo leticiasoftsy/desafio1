@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Col, Card, CardBody } from "react-bootstrap";
-import type { User, } from "../../@types/user";
+// import type { User } from "../../@types/user"; // Removido pois não está mais em uso
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema, type DataForm } from "./formData";
@@ -27,26 +27,6 @@ export default function UserForm({ id }: UserFormProps){
     resolver: zodResolver(formSchema),
   });
 
-  const [formData, setFormData] = useState<User>({
-    name: {
-    firstname: "",
-    lastname: ""
-  },
-    email: "",
-    phone: "",
-    username: "",
-    password: "",
-    address: {
-    city: "",
-    geolocation: {
-      lat: "",
-      long: "",
-    },
-    number: 0,
-    street: "",
-    zipcode: ""
-  },
-});
 
   useEffect(() => {
     console.log(id);
@@ -57,7 +37,6 @@ export default function UserForm({ id }: UserFormProps){
       try {
         const res = await axios(`https://fakestoreapi.com/users/${id}`);
         const user = res.data;
-        setFormData(user);
 
         setValue("name", user.name);
         setValue("email", user.email);
