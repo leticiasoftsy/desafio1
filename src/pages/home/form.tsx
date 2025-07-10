@@ -97,20 +97,21 @@ export default function UserForm({ id }: UserFormProps){
   };
   
   return (
-    <Card className="mx-auto mt-5 shadow" style={{ maxWidth: "50%", maxHeight:"1000px" }}>
-      <Card.Header className="text-center fw-bold bg-light">
-        <h5>{id ? "Editar usuario" : "Cadastro de Usuário"}</h5>
-      </Card.Header>
-          <hr className="w-100 border-dark opacity p-0 my-0 m-0"/>
-        <CardBody>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <Col md={12}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Nome<span className="text-danger">*</span>
-              </Form.Label>
-              <Form.Control
+    <div style={{minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+     <Card className="shadow-lg border-0 rounded-4 p-2 animate__animated animate__fadeIn" style={{ background: '#fff', marginTop: 40, marginBottom: 40 }}>
+      <Card.Header className="text-center fw-bold bg-light rounded-top-4 border-0">
+        <h4 className="mb-0">{id ? "Editar usuario" : "Cadastro de Usuário"}</h4>
+       </Card.Header>
+          <hr className="w-100 border-dark opacity-25 p-0 my-0 m-0"/>
+         <CardBody>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <div className="g-3">
+             <Col md={12} sm={6}>
+              <Form.Group>
+               <Form.Label>
+                Nome <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
                 type="text"
                 {...register("name.firstname")}
                 isInvalid={!!errors.name?.firstname}
@@ -121,14 +122,14 @@ export default function UserForm({ id }: UserFormProps){
                 {errors.name?.firstname?.message}
               </Form.Control.Feedback>
             </Form.Group>
-          </Col>
+           </Col>
           
-          <Col md={12}>
+          <Col md={12} sm={6}>
             <Form.Group className="mb-3">
               <Form.Label>
-                Sobrenome<span className="text-danger">*</span>
-              </Form.Label>
-              <Form.Control
+                Sobrenome <span className="text-danger">*</span>
+               </Form.Label>
+               <Form.Control
                 type="text"
                 {...register("name.lastname")}
                 isInvalid={!!errors.name?.lastname}
@@ -141,10 +142,10 @@ export default function UserForm({ id }: UserFormProps){
             </Form.Group>
           </Col>
 
-          <Col md={12}>
+          <Col md={12} sm={6}>
             <Form.Group className="mb-3">
               <Form.Label>
-                E-mail<span 
+                E-mail <span 
                 className="text-danger"
                 >*</span>
               </Form.Label>
@@ -161,10 +162,10 @@ export default function UserForm({ id }: UserFormProps){
             </Form.Group>
           </Col>
 
-          <Col md={12}>
+          <Col md={12} sm={6}>
             <Form.Group className="mb-3 position-relative">
               <Form.Label>
-                Senha<span className="text-danger">*</span>
+                Senha <span className="text-danger">*</span>
               </Form.Label>
               <Form.Control
                 type={mostrarSenha ? "text" : "password"}
@@ -197,11 +198,10 @@ export default function UserForm({ id }: UserFormProps){
               className="px-4 py-2">
          {id ? "Atualizar Usuario" : "Cadastrar Usuário"}
         </Button>
-        </div>
+       </div>
       </Form>
-      </CardBody>
-
-      
+     </CardBody>
     </Card>
+    </div>
   );
 }
