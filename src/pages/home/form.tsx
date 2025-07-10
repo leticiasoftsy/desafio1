@@ -77,14 +77,14 @@ export default function UserForm({ id }: UserFormProps){
     <div style={{minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
      <Card className="shadow-lg border-0 rounded-4 p-3 animate__animated animate__fadeIn" style={{ background: '#fff', marginTop: 40, marginBottom: 40, maxWidth: '540px', width: '100%' }}>
       <Card.Header className="text-center fw-bold bg-light rounded-top-4 border-0">
-        <h4 className="mb-0">{id ? "Editar usuario" : "Cadastro de Usuário"}</h4>
+        <h4 className="mb-0" style={{ color: '#0d6efd' }}>{id ? "Editar usuario" : "Cadastro de Usuário"}</h4>
        </Card.Header>
-          <hr className="w-100 border-dark opacity-25 p-0 my-0 m-0"/>
+          <hr className="w-100 border-white opacity-25 p-0 my-0 m-0"/>
          <CardBody>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <div className="g-3">
              <Col md={12} sm={6}>
-              <Form.Group>
+              <Form.Group className="mb-3">
                <Form.Label>
                 Nome <span className="text-danger">*</span>
                 </Form.Label>
