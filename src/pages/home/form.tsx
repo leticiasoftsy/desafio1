@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button, Col, Card, CardBody } from "react-bootstrap";
-// import type { User } from "../../@types/user"; // Removido pois não está mais em uso
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema, type DataForm } from "./formData";
