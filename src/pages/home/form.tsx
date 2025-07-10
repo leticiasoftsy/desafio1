@@ -16,7 +16,6 @@ export default function UserForm({ id }: UserFormProps){
 
   const [mostrarSenha, setMostrarSenha] = useState(false)
 
-
   const {
     register,
     handleSubmit,
@@ -76,7 +75,7 @@ export default function UserForm({ id }: UserFormProps){
   
   return (
     <div style={{minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-     <Card className="shadow-lg border-0 rounded-4 p-2 animate__animated animate__fadeIn" style={{ background: '#fff', marginTop: 40, marginBottom: 40 }}>
+     <Card className="shadow-lg border-0 rounded-4 p-3 animate__animated animate__fadeIn" style={{ background: '#fff', marginTop: 40, marginBottom: 40, maxWidth: '540px', width: '100%' }}>
       <Card.Header className="text-center fw-bold bg-light rounded-top-4 border-0">
         <h4 className="mb-0">{id ? "Editar usuario" : "Cadastro de Usuário"}</h4>
        </Card.Header>
@@ -106,8 +105,8 @@ export default function UserForm({ id }: UserFormProps){
             <Form.Group className="mb-3">
               <Form.Label>
                 Sobrenome <span className="text-danger">*</span>
-               </Form.Label>
-               <Form.Control
+                </Form.Label>
+                <Form.Control
                 type="text"
                 {...register("name.lastname")}
                 isInvalid={!!errors.name?.lastname}
